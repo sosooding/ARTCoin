@@ -15,17 +15,19 @@ from Crypto.PublicKey import RSA
 
 class Transaction:
 
-	def __init__(self, receiver = None, sender = None, amount = 0, ownerPK = None):
+	def __init__(self, receiver = None, sender = None, amount = 0, ownerPK = None, fee = 0):
 
 		self.sender = sender
 		self.receiver = receiver
 		self.amount = amount
 		self.hash = None
 		self.signature = None
+		self.fee = 0
+		self.id = 0
 
 	def signTransaction(self, private_key, public_key):
 
-		message = self.sender + ' ' + self.receiver + ' ' + str(self.amount)
+		message = str(self.sender) + ' ' + str(self.receiver) + ' ' + str(self.amount)
 		digest = SHA256.new()
 		digest.update(message)
 		self.hash = digest.hexdigest()
@@ -56,3 +58,15 @@ class Transaction:
 
 	def getSignature(self):
 		return self.signature
+
+	def setFee(self, fee):
+		self.fee = fee 
+
+	def getFee(self):
+		return self.fee
+
+	def setID(self, ID):
+		self.id = ID
+
+	def getID(self):
+		return self.id

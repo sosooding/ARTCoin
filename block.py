@@ -4,7 +4,6 @@ Class to implement a block
 Requirements:
 	:module: transaction
 	:module: merkletree
-	:module: miner
 	:module: Crypto.Hash
 	:module: helperfunctions
 """
@@ -15,7 +14,7 @@ from Crypto.Hash import SHA256
 
 class Block:
 
-	def __init__(self, index = 0, prev_hash = '0000000000000000000000000000000000000000000000000000000000000000', difficulty = 0, max_nodes = 256):
+	def __init__(self, index = 0, prev_hash = '0000000000000000000000000000000000000000000000000000000000000000', difficulty = 3, max_nodes = 256):
 
 		'''
 		Constructor function to generate a block.
@@ -31,7 +30,8 @@ class Block:
 		self.next = None
 		self.time_stamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 		self.hash = '0000000000000000000000000000000000000000000000000000000000000000'
-		
+		self.__addedToChain = False
+
 		#self.forked_blocks = []
 
 	def setIndex(self, idx):
@@ -97,6 +97,10 @@ class Block:
 
 		if not self.checkSolution():
 			print "Mine the current block first."
+			return False
+
+		if self.getStatus():
+			print "Already in a chain"
 			return False
 
 		new_block.setPrevHash(self.getHash())
@@ -178,10 +182,16 @@ class Block:
 
 		self.__setNonce(nonce)
 		self.__createHash()
-
+		
 		if helperfunctions.countZeroes(self.getHash()) >= self.difficulty:
 			return True
 			
 		else:
 			self.__resetHash()
 			return False
+
+	def setStatus(self, status):
+		self.__addedToChain = status
+
+	def getStatus(self):
+		return self.__addedToChain

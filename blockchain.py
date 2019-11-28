@@ -6,8 +6,7 @@ Requirements:
 	:module: miner
 """
 
-import block
-import miner
+import block, miner
 
 class Blockchain:
 
@@ -23,7 +22,7 @@ class Blockchain:
 
 		self.__createGenesisBlock()
 
-		miner.Miner().startMining(self.main_chain_genesis)
+		miner.Miner(-1).mine(self.main_chain_genesis)
 
 	def __createGenesisBlock(self):
 
@@ -101,7 +100,7 @@ class Blockchain:
 		:rtype: bool
 		'''
 
-		if self.validateNewBlock(new_block):
+		if self.validateNewBlock(new_block) and not new_block.getStatus():
 
 			'''
 			To be implemented when expanding the project to handle multiple 
@@ -110,7 +109,7 @@ class Blockchain:
 			new_block.resolveConflicts()
 			self.latest_block.forkBlock(new_block)
 			'''
-
+			new_block.setStatus(True)
 			self.latest_block.setNextBlock(new_block)
 			self.updateChain()
 
@@ -131,3 +130,11 @@ class Blockchain:
 
 	def setLatestBlock(self, new_block):
 		self.latest_block = new_block
+
+	def showChain(self):
+
+		cur = self.main_chain_genesis
+
+		while cur != None:
+			print cur 
+			cur = cur.next
